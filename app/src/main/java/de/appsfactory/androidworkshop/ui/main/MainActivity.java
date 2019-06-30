@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         observeLoading();
         observePosts();
+        observeError();
     }
 
     private void initViews() {
@@ -66,6 +68,16 @@ public class MainActivity extends AppCompatActivity {
             }
             ((PostAdapter)adapter).updatePosts(loadedPosts);
         }
+    }
+
+    private void observeError() {
+        if (mainViewModel != null) {
+            mainViewModel.getError().observe(this, this::showError);
+        }
+    }
+
+    private void showError(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 
 
