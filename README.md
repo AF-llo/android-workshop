@@ -27,12 +27,40 @@ Laden Sie die Posts von der API. Zum Laden der Posts sollte Retrofit als REST-Cl
 6. Ersetzen Sie das Laden der Posts in der Klasse `MainViewModel` und laden Sie stattdessen die Daten mit Retrofit von der API. Nutzen Sie zum Laden die Asynchrone methode `Call.enqueue(Callback)`
 
 Info - Anzeigen eines Toasts:
+
 ``` Java
 Toast.makeText(Context context, String message, int duration)
 ```
+
+## Aufgabe 2
+Machen Sie die Anwendung offline fähig. Geladene Posts sollen bei jedem erfolgreichen Abruf auch lokal in einer Datenbank gespeichert werden. Hierfür kann die Bibliothek [Room] verwendet werden.  Wenn das Handy nicht mit dem Internet verbunden ist, dann sollen stattdessen die lokalen Daten angezeigt werden. Damit das Laden aus der Datenbank
+
+Zum Überprüfen ob Internet verfügbar ist, ist die Berechtigung ÀCCESS_NETWORK_STATE erforderlich. Für die Prüfung selbst kann folgende Code-Snippet genutzt werden (einfach in das Projekt kopieren):
+
+``` Java
+public static boolean isInternetAvailable(Context context) {
+    ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+    boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
+    return isConnected;
+}
+```
+
+1. Fügen Sie Room als Dependency der App hinzu: implementation "androidx.room:room-runtime:$room_version"
+2. Erstellen sie ein `persistance` package, dem die benötigten Klassen für Room hinzugefügt werden:
+  * PostEntity
+  * PostDao
+  * AppDatabase (erbt von `RoomDatabase`)
+3. Erstellen Sie ein package `app` und darin die Klasse `PostApplication`, die von `Application` abgeleitet wird. Überschreiben Sie schließlich `onCreate`. Diese muss anschließend in der AndroidManifest als attribute `name` im Tag der application gesetzt werden.
+4. Um Zugriff auf das `AppDatabase` Objekt zu erhalten, wird in der onCreate Methode der `PostApplication` die AppDatabase erstellt und als statische Methode verfügbar gemacht.
+5. Laden Sie nun im MainViewModel die Daten entweder über Retrofit, oder alternativ aus Room. Um im `MainViewModel` das Internet zu prüfen wird der `Context` benötigt. Hierfür kann man stattdessen von `AndroidViewModel` ableiten.
+6. Damit auch beim Laden aus der DB der UI-Thread nicht blockier twird, muss das Laden in einem `AsyncTask` ausgeführt werden.
+7. Wenn die Daten erfolgreich von der Api geladen wurden müssen diese noch in der Datenbank gespeichert werden.
 
 [Android-Studio]: https://developer.android.com/studio
 [Github]: https://github.com/af-llo/android-workshop
 [Retrofit]: https://square.github.io/retrofit/
 [Gson]: https://github.com/google/gson
 [LoggingInterceptor]: https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor
+[Room]: https://developer.android.com/training/data-storage/room/index.html
+[AsyncTask]: https://developer.android.com/reference/android/os/AsyncTask
