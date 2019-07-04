@@ -18,7 +18,7 @@ public interface Api {
 
     String HEADER_AUTHORIZATION = "Authorization";
 
-    String TOKEN = ""; // todo: 2019-06-30 mit gültigem token ersetzen
+    String TOKEN = "siQUjTczlfghRKutfdHNfSeyRw4Vwu"; // todo: 2019-06-30 mit gültigem token ersetzen
 
     String BEARER_TOKEN = "Bearer " + TOKEN;
 
